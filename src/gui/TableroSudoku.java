@@ -1,3 +1,4 @@
+
 package gui;
 
 import java.awt.Color;
@@ -10,206 +11,296 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import kernel.Sudoku;
 
 public class TableroSudoku extends JPanel{
+
+    // Definición de las variables que representan las celdas del Sudoku y sus propiedades visuales
+    private JTextField[][] listaTxt;
+    private int txtAncho;
+    private int txtLargo;
+    private int txtMargen;
+    private int txtTamanioLetra;
+    private Color panelBackground;
+    private Color txtBackground1;
+    private Color txtForeground1;
+    private Color txtBackground2;
+    private Color txtForeground2;
+    private Color txtBackground3;
+    private Color txtForeground3;
+    private Color txtBackground4;
+    private Color txtForeground4;
+    private Sudoku sudoku;
+    private ArrayList<JTextField> listaTxtAux;
+    private ArrayList<JTextField> listaTxtGenerados;
+    public JTextField txtSelect;
+
+    // Constructor de la clase, inicializa los componentes del panel
+    TableroSudoku(){
+        iniciarComponentes();
+    }
+
+    // Método para inicializar los componentes del tablero
+    public void iniciarComponentes() {
+        listaTxt = new JTextField[9][9]; // Matriz de JTextFields para las celdas del Sudoku
+        txtAncho = 35;
+        txtLargo = 36;
+        txtMargen = 4;
+        txtTamanioLetra = 27;
+        panelBackground = Color.black;
+        txtBackground1 = Color.WHITE;
+        txtForeground1 = Color.black;
+        txtBackground2 = Color.WHITE;
+        txtForeground2 = Color.black;
+        txtBackground3 = Color.WHITE;
+        txtForeground3 = Color.black;
+        sudoku = new Sudoku(); // Se instancia el objeto Sudoku
+        listaTxtAux = new ArrayList<>(); // Lista auxiliar para celdas seleccionadas
+        listaTxtGenerados = new ArrayList<>(); // Lista de celdas generadas
+        txtSelect = new JTextField(); // Campo de texto para selección actual
+    }
+
+    // Método para configurar y crear el Sudoku en el panel
+    public void crearSudoku() {
+        this.setLayout(null);
+        this.setSize(txtAncho*9 + (txtMargen * 4), txtAncho*9 + (txtMargen * 4));
+        this.setBackground(panelBackground);
+        crearCamposTxt(); // Crea los campos de texto (celdas)
+    }
+
+    // Método que genera los campos de texto (celdas) del Sudoku
+    public void crearCamposTxt() {
+        int x = txtMargen;
+        int y = txtMargen;
+        
+        // Itera sobre la matriz para crear las celdas y agregarlas al panel
+        for (int i = 0; i < listaTxt.length; i++) {
+            for (int j = 0; j < listaTxt[0].length; j++) {
+                JTextField txt = new JTextField();
+                this.add(txt); // Agrega la celda al panel
+                txt.setBounds(x, y, txtAncho, txtLargo); // Establece el tamaño y posición
+                txt.setBackground(txtBackground1);
+                txt.setForeground(txtForeground1);
+                txt.setFont(new Font("Arial Black", Font.BOLD, txtTamanioLetra));
+                txt.setEditable(false); // Las celdas no son editables directamente
+                txt.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Cambia el cursor al hacer hover
+                txt.setBorder(BorderFactory.createLineBorder(panelBackground, 1));
+                txt.setVisible(true);
+                x += txtAncho; // Avanza en la dirección X
+                if((j+1)%3 == 0) {
+                    x += txtMargen; // Ajusta el espaciado después de cada bloque 3x3
+                }
+                listaTxt[i][j] = txt; // Asigna la celda a la matriz
+                generarEventos(txt); // Asocia eventos a cada celda
+            }
+            x = txtMargen; // Reinicia la posición X
+            y += txtLargo; // Avanza en la dirección Y
+            if((i+1)%3 == 0) {
+                y += txtMargen; // Ajusta el espaciado después de cada bloque 3x3
+            }
+        }
+    }
+
+    // Verifica si un JTextField ya ha sido generado (para evitar duplicados)
+    public boolean txtGenerado(JTextField txt) {
+        for (JTextField jTxt: listaTxtGenerados) {
+            if(txt == jTxt) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Método para generar los eventos de interacción con las celdas
+    public void generarEventos(JTextField txt) {
+        MouseListener evento = new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) { }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                pressed(txt); // Marca la celda como seleccionada
+                txtSelect = txt; // Actualiza la celda seleccionada
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) { }
+
+            @Override
+            public void mouseEntered(MouseEvent e) { }
+
+            @Override
+            public void mouseExited(MouseEvent e) { }
+        };
+
+        // Evento para capturar teclas presionadas en la celda
+        KeyListener eventoTecla = new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) { }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(txtGenerado(txt)) {
+                    return; // No hace nada si la celda ya está generada
+                } else {
+                    // Si la tecla presionada es Backspace, borra el texto
+                    if(e.getKeyChar() == KeyEvent.VK_BACK_SPACE) {
+                        txt.setText("");
+                    }
+                    // Si la tecla presionada es un número (1-9), lo coloca en la celda
+                    if (e.getKeyChar() >= '1' && e.getKeyChar() <= '9') {
+                        txt.setText(String.valueOf(e.getKeyChar()));
+                    }
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) { }
+        };
+
+        // Asocia los eventos al JTextField
+        txt.addMouseListener(evento);
+        txt.addKeyListener(eventoTecla);
+    }
+
+    // Método para manejar la lógica de selección de una celda (marca las celdas relacionadas)
+    public void pressed(JTextField txt) {
+        // Restaura los colores de las celdas previamente seleccionadas
+        for(JTextField jTxt : listaTxtAux) {
+            jTxt.setBackground(txtBackground1);
+            jTxt.setForeground(txtForeground1);
+            jTxt.setBorder(BorderFactory.createLineBorder(panelBackground, 1));
+        }
+        listaTxtAux.clear();
+        
+        // Marca las celdas generadas con un color específico
+        for(JTextField jTxt : listaTxtGenerados) {
+            jTxt.setBackground(txtBackground4);
+            jTxt.setForeground(txtForeground4);
+        }
+        
+        // Itera sobre las celdas para marcar las celdas en la misma fila, columna y subcuadrante
+        for (int i = 0; i < listaTxt.length; i++) {
+            for (int j = 0; j < listaTxt[0].length; j++) {
+                if (listaTxt[i][j] == txt) {
+                    for (int k = 0; k < listaTxt.length; k++) {
+                        listaTxt[k][j].setBackground(txtBackground2);
+                        listaTxtAux.add(listaTxt[k][j]);
+                    }
+                    for (int k = 0; k < listaTxt[0].length; k++) {
+                        listaTxt[i][k].setBackground(txtBackground2);
+                        listaTxtAux.add(listaTxt[i][k]);
+                    }
+                    // Marca las celdas del subcuadrante correspondiente
+                    int posI = sudoku.subCuadranteActual(i);
+                    int posJ = sudoku.subCuadranteActual(j);
+                    for (int k = posI - 3; k < posI; k++) {
+                        for (int l = posJ - 3; l < posJ; l++) {
+                            listaTxt[k][l].setBackground(txtBackground2);
+                            listaTxtAux.add(listaTxt[k][l]);
+                        }
+                    }
+
+                    listaTxt[i][j].setBackground(txtBackground3); // Marca la celda seleccionada
+                    listaTxt[i][j].setForeground(txtForeground3);
+                    listaTxt[i][j].setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
+                    return;
+                }
+            }
+        }
+    }
+
+    // Método para generar un Sudoku con un nivel de dificultad específico
+    public void generarSudoku(int nivel) {
+        listaTxtGenerados.clear();
+        limpiarTxt(); // Limpia los valores previos
+        sudoku.generarSudoku(nivel); // Genera un nuevo Sudoku
+        int[][] sudokuGenerado = sudoku.getSudoku();
+        
+        // Asigna los valores generados al Sudoku en las celdas correspondientes
+        for(int i = 0; i < listaTxt.length; i++) {
+            for(int j = 0; j < listaTxt[0].length; j++) {
+                if (sudokuGenerado[i][j] != 0) {
+                    listaTxt[i][j].setText(String.valueOf(sudokuGenerado[i][j]));
+                    listaTxt[i][j].setBackground(txtBackground4);
+                    listaTxt[i][j].setForeground(txtForeground4);
+                    listaTxtGenerados.add(listaTxt[i][j]);
+                }
+            }
+        }
+    }
+
+    // Método para limpiar todas las celdas del Sudoku
+    public void limpiarTxt() {
+        for(int i = 0; i < listaTxt.length; i++) {
+            for(int j = 0; j < listaTxt[0].length; j++) {
+                listaTxt[i][j].setText(""); // Borra el texto
+                listaTxt[i][j].setBackground(txtBackground1); // Restaura el fondo
+                listaTxt[i][j].setForeground(txtForeground1); // Restaura el color de texto
+            }
+        }
+    }
 	
-	private JTextField[][] listaTxt;
-	private int txtAncho;
-	private int txtLargo;
-	private int txtMargen;
-	private int txtTamanioLetra;
-	private Color panelBackground;
-	private Color txtBackground1;
-	private Color txtForeground1;
-	private Color txtBackground2;
-	private Color txtForeground2;
-	private Color txtBackground3;
-	private Color txtForeground3;
-	private Sudoku sudoku;
-	private ArrayList<JTextField> listaTxtAux;
-	
-	TableroSudoku(){
-		iniciarComponentes();
-	}
-	
-	public void iniciarComponentes() {
-		listaTxt = new JTextField[9][9];
-		txtAncho = 35;
-		txtLargo = 36;
-		txtMargen = 4;
-		txtTamanioLetra = 27;
-		panelBackground = Color.black;
-		txtBackground1 = Color.WHITE;
-		txtForeground1 = Color.black;
-		txtBackground2 = Color.WHITE;
-		txtForeground2 = Color.black;
-		txtBackground3 = Color.WHITE;
-		txtForeground3 = Color.black;
-		sudoku = new Sudoku();
-		listaTxtAux = new ArrayList<>();
-	}
-	
-	public void crearSudoku() {
-		this.setLayout(null);
-		this.setSize(txtAncho*9 + (txtMargen * 4),txtAncho*9 + (txtMargen * 4) );
-		this.setBackground(panelBackground);
-		crearCamposTxt();
-	}
-	
-	public void crearCamposTxt() {
-		int x = txtMargen;
-		int y = txtMargen;
-		
-		for (int i = 0; i < listaTxt.length; i++) {
-			for (int j = 0; j < listaTxt[0].length; j++) {
-				JTextField txt = new JTextField();
-				this.add(txt);
-				txt.setBounds(x,y, txtAncho, txtLargo);
-				txt.setBackground(txtBackground1);
-				txt.setForeground(txtForeground1);
-				txt.setFont(new Font("Arial Black",Font.BOLD,txtTamanioLetra));
-				txt.setEditable(false);
-				txt.setCursor(new Cursor(Cursor.HAND_CURSOR));
-				txt.setBorder(BorderFactory.createLineBorder(panelBackground,1));
-				txt.setVisible(true);
-				x += txtAncho;
-				if((j+1)%3==0) {
-					x+=txtMargen;
-				}
-				listaTxt[i][j] = txt;
-				generarEventos(txt);
-			}
-			x = txtMargen;
-			y+=txtLargo;
-			if((i+1)%3==0) {
-				y += txtMargen;
-			}
-		}
-	}
-	
-	public void generarEventos(JTextField txt) {
-		MouseListener evento = new MouseListener() {
-
-			@Override
-			public void mouseClicked(MouseEvent e) {
-
-			}
-
-			@Override
-			public void mousePressed(MouseEvent e) {
-				pressed(txt);
-			}
-
-			@Override
-			public void mouseReleased(MouseEvent e) {
-
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-
-			}
-			};
-			KeyListener eventoTecla = new KeyListener(){
-
-				@Override
-				public void keyTyped(KeyEvent e) {
-					// TODO Auto-generated method stub
-					
-				}
-
-				@Override
-				public void keyPressed(KeyEvent e) {
-					if (e.getKeyChar()>=49&&e.getKeyChar()<=57) {
-						txt.setText(String.valueOf(e.getKeyChar()));
+	public void limpiar() {
+		for(int i = 0;i< listaTxt.length; i++) {
+			for(int j = 0;j< listaTxt[0].length; j++) {
+				boolean b = false;
+				for(JTextField txt: listaTxtGenerados) {
+					if(listaTxt[i][j]==txt) {
+					b = true;
+					break;
+						}
 					}
+				if(!b) {
+					listaTxt[i][j].setText("");
 				}
+			}
+		}
+	}
+	
+	public boolean comprobar() {
+		int sudo[][] = new int [9][9];
+		for(int i = 0;i< listaTxt.length; i++) {
+			for(int j = 0;j< listaTxt[0].length; j++) {
+					if(listaTxt[i][j].getText().isEmpty()) {
+						JOptionPane.showMessageDialog(null, "Sudoku incompleto (+10 Seg)","Error",JOptionPane.ERROR_MESSAGE);
+						return false;
+					}
+					sudo[i][j]=Integer.parseInt(listaTxt[i][j].getText());
+				}	
+			}
+		sudoku.setSudoku(sudo);
+		if(sudoku.ComprobarSudoku()) {
+			JOptionPane.showMessageDialog(null, "Sudoku correcto!","Sudoku",JOptionPane.INFORMATION_MESSAGE);
+			return true;
+		}
+		else {
+			JOptionPane.showMessageDialog(null, "Sudoku incorrecto! (+10 Seg)","Sudoku",JOptionPane.INFORMATION_MESSAGE);
+			return false;
+		}
+	}
+	
+	
+	public Color getTxtBackground4() {
+		return txtBackground4;
+	}
 
-				@Override
-				public void keyReleased(KeyEvent e) {
-					// TODO Auto-generated method stub
-					
-				}
-				
-			};
-			txt.addMouseListener(evento);
-			txt.addKeyListener(eventoTecla);
+	public void setTxtBackground4(Color txtBackground4) {
+		this.txtBackground4 = txtBackground4;
 	}
-	
-	public void pressed (JTextField txt) {
-		
-		for(JTextField jTxt : listaTxtAux) {
-			jTxt.setBackground(txtBackground1);
-			jTxt.setForeground(txtForeground1);
-			jTxt.setBorder(BorderFactory.createLineBorder(panelBackground,1));
-		}
-		listaTxtAux.clear();
-		for (int i = 0; i < listaTxt.length; i++) {
-			for (int j = 0; j < listaTxt[0].length; j++) {
-				 if (listaTxt[i][j]==txt) {
-					 for (int k = 0; k < listaTxt.length; k++) {
-						 listaTxt[k][j].setBackground(txtBackground2);
-						 listaTxt[k][j].setForeground(txtForeground2);
-						 listaTxtAux.add(listaTxt[k][j]);
-						 
-					 }
-					 for (int k = 0; k < listaTxt[0].length; k++) {
-						 listaTxt[i][k].setBackground(txtBackground2);
-						 listaTxt[i][k].setForeground(txtForeground2);
-						 listaTxtAux.add(listaTxt[i][k]);
-					 }
-					 int posI = sudoku.subCuadranteActual(i);
-					 int posJ = sudoku.subCuadranteActual(j);
-					 
-					 for (int k = posI-3; k<posI; k++) {
-						 for (int l = posJ-3; l<posJ; l++) {
-							 listaTxt[k][l].setBackground(txtBackground2);
-							 listaTxt[k][l].setForeground(txtForeground2);
-							 listaTxtAux.add(listaTxt[k][l]);
-						 }
-					 }
 
-					listaTxt[i][j].setBackground(txtBackground3);
-					listaTxt[i][j].setForeground(txtForeground3);
-					listaTxt[i][j].setBorder(BorderFactory.createLineBorder(Color.WHITE,2));
-					return;
-				 }
-				}
-			}
+	public Color getTxtForeground4() {
+		return txtForeground4;
 	}
-	
-	public void generarSudoku(int nivel) {
-		limpiarTxt();
-		sudoku.generarSudoku(nivel);
-		int [][] sudokuGenerado = sudoku.getSudoku();
-		
-		for(int i = 0; i<listaTxt.length;i++) {
-			for(int j = 0; j<listaTxt[0].length;j++) {
-				if (sudokuGenerado[i][j] != 0) {
-					listaTxt[i][j].setText(String.valueOf(sudokuGenerado[i][j]));
-				}
-				
-			}
-		}
+
+	public void setTxtForeground4(Color txtForeground4) {
+		this.txtForeground4 = txtForeground4;
 	}
-	
-	public void limpiarTxt() {
-		for(int i = 0; i<listaTxt.length;i++) {
-			for(int j = 0; j<listaTxt[0].length;j++) {
-				listaTxt[i][j].setText("");
-			}
-		}
-	}
-	
+
 	public JTextField[][] getListaTxt() {
 		return listaTxt;
 	}
