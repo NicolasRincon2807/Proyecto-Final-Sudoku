@@ -120,7 +120,11 @@ public class FormSudoku extends JFrame {
 		JButton btnComprobar = new JButton("Comprobar");
 		btnComprobar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//si el sudoku no es correcto se penaliza con 10 segundos
+				//Si el cronometro no ha sido iniciado se deshabilita el botón
+				if (lblTimer.getText().equals("00:00:00:00")) {
+					return;
+				}else
+					//si el sudoku no es correcto se penaliza con 10 segundos
 				if(!tableroSudoku.comprobar()) cronometro.penalizar();
 			}
 		});
@@ -129,7 +133,7 @@ public class FormSudoku extends JFrame {
 		btnComprobar.setFont(new Font("Arial Black", Font.BOLD, 12));
 		btnComprobar.setBounds(417, 179, 134, 35);
 		PanelFondo.add(btnComprobar);
-
+		
 		// Configuración del botón "Ir al menú"
 		JButton btnVolver = new JButton("Ir al menú");
 		btnVolver.setBackground(new Color(89, 43, 25));
@@ -147,9 +151,6 @@ public class FormSudoku extends JFrame {
 
 		// Hace visible el tablero de números
 		tableroNumeros.setVisible(true);
-
-		// Genera un Sudoku con nivel 2 (segundo nivel de dificultad)
-		tableroSudoku.generarSudoku(2);
 	}
 
 	// Métodos getters y setters
@@ -168,4 +169,5 @@ public class FormSudoku extends JFrame {
 	public static void setLblTimer(JLabel lblTimer) {
 		FormSudoku.lblTimer = lblTimer;
 	}
+	
 }

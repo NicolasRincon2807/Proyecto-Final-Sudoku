@@ -144,6 +144,10 @@ public class TableroSudoku extends JPanel{
 
             @Override
             public void keyPressed(KeyEvent e) {
+            	
+            	if(estaVacio()) {//si el sudoku esta sin iniciar, es decir totalmente vacío no se puede ingresar datos
+            		return;
+            	}
                 if(txtGenerado(txt)) {
                     return; // No hace nada si la celda ya está generada
                 } else {
@@ -284,6 +288,22 @@ public class TableroSudoku extends JPanel{
 		}
 	}
 	
+	public boolean estaVacio() {
+	    if (listaTxt == null) {
+	        return true;  // El arreglo no ha sido inicializado.
+	    }
+
+	    for (int i = 0; i < listaTxt.length; i++) {
+	        for (int j = 0; j < listaTxt[i].length; j++) {
+	            // Verificamos si alguna celda tiene un valor distinto de vacío
+	            if (!listaTxt[i][j].getText().isEmpty()) {
+	                return false;  // Si alguna celda tiene texto, el Sudoku no está vacío
+	            }
+	        }
+	    }
+
+	    return true;  // Si todas las celdas están vacías
+	}
 	
 	public Color getTxtBackground4() {
 		return txtBackground4;

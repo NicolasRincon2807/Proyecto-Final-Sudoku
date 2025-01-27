@@ -110,6 +110,8 @@ public class TableroNumeros extends JPanel{// Definición de variables que confi
 	            // Si el texto ya fue generado, no hace nada
 	            if (tableroSudoku.txtGenerado(tableroSudoku.txtSelect)) {
 	                return;
+	            }else if (tableroSudoku.estaVacio()) {
+	            	return;
 	            }
 	            // Si no, asigna el texto del campo de texto al texto seleccionado
 	            tableroSudoku.txtSelect.setText(txt.getText());
