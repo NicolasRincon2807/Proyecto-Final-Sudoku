@@ -9,6 +9,8 @@ import java.awt.FlowLayout;
 import java.awt.Color;
 import java.awt.SystemColor;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
@@ -123,9 +125,17 @@ public class FormSudoku extends JFrame {
 				//Si el cronometro no ha sido iniciado se deshabilita el botón
 				if (lblTimer.getText().equals("00:00:00:00")) {
 					return;
-				}else
+				}else {
 					//si el sudoku no es correcto se penaliza con 10 segundos
-				if(!tableroSudoku.comprobar()) cronometro.penalizar();
+				if(!tableroSudoku.comprobar()) {
+					cronometro.penalizar();
+					}else{
+						cronometro.parar();
+						JOptionPane.showMessageDialog(null, "Tu tiempo fue de" + lblTimer.getText(),"Sudoku",JOptionPane.INFORMATION_MESSAGE);
+						
+					}
+						
+				}
 			}
 		});
 		btnComprobar.setBackground(new Color(89, 43, 25));
