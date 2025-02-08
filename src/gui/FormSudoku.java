@@ -1,20 +1,27 @@
 package gui;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-import java.awt.FlowLayout;
+
+import kernel.Jugador;
+import persistencia.ModificarArchivos;
+
 import java.awt.Color;
-import java.awt.SystemColor;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
+
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.event.ActionEvent;
+
 
 public class FormSudoku extends JFrame {
 
@@ -26,29 +33,86 @@ public class FormSudoku extends JFrame {
 	private FormNiveles formniveles; // Componente para la selección de niveles
 	private static JLabel lblTimer = new JLabel("00:00:00:00"); // Etiqueta para mostrar el tiempo transcurrido
 	Cronometro cronometro = new Cronometro(lblTimer); // Instancia del cronómetro
-
+	
 	// Constructor de la clase FormSudoku, inicializa los componentes
-	public FormSudoku() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Establece la acción al cerrar la ventana
-		setBounds(100, 100, 590, 430); // Configura el tamaño y posición de la ventana
+	public FormSudoku(Jugador player) {
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE); // No cerrar automáticamente
+
+        // Agregar un WindowListener
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+            	GuardarAntesDeCerrar(player);
+                // Finalmente, cerrar la ventana
+                dispose(); // Cierra la ventana
+                // System.exit(0); // Si deseas terminar la aplicación
+            }
+        });
+        setBounds(100, 100, 590, 430); // Configura el tamaño y posición de la ventana
 		PanelFondo = new JPanel(); // Crea el panel de fondo
 		PanelFondo.setBackground(new Color(242, 174, 37)); // Color de fondo del panel
 		PanelFondo.setBorder(new EmptyBorder(5, 5, 400, 240)); // Margen del panel
 		setContentPane(PanelFondo); // Asigna el panel de fondo al JFrame
 		PanelFondo.setLayout(null); // Establece un diseño nulo para colocar los componentes manualmente
-
+		
+        // Cargar la imagen desde el paquete resources
+        ImageIcon icono = new ImageIcon(getClass().getClassLoader().getResource("sudoku.png"));
+        setIconImage(icono.getImage());
 		// Configuración de la etiqueta para mostrar el cronómetro
 		lblTimer.setForeground(Color.WHITE);
 		lblTimer.setFont(new Font("Arial Black", Font.BOLD, 18)); // Fuente del cronómetro
 		lblTimer.setBounds(417, 47, 127, 43); // Posición y tamaño de la etiqueta
-		PanelFondo.add(lblTimer); // Añade la etiqueta al panel
-
+		PanelFondo.add(lblTimer); // Añade la etiqueta al panel		
+	    // Verificar si hay partida guardada
+	    if (player.tienePartidaGuardada() && player.ValidarMatrizGuardada() && player.getDificultad()!=0) {
+	        int option = JOptionPane.showConfirmDialog(null, 
+	            "Tienes una partida sin terminar. ¿Deseas continuarla?",
+	            "Partida guardada", 
+	            JOptionPane.YES_NO_OPTION);
+	            
+	        if (option == JOptionPane.YES_OPTION) {
+	            iniciarComponentes(player);  // Primero iniciamos los componentes
+	            
+	            // Restaurar el tablero generado inicial (números fijos)
+	            for(int i = 0; i < 9; i++) {
+	                for(int j = 0; j < 9; j++) {
+	                    if (player.getSudokuGenerado()[i][j] != 0) {
+	                        tableroSudoku.getListaTxt()[i][j].setText(
+	                            String.valueOf(player.getSudokuGenerado()[i][j]));
+	                        tableroSudoku.getListaTxt()[i][j].setBackground(tableroSudoku.getTxtBackground4());
+	                        tableroSudoku.getListaTxt()[i][j].setForeground(tableroSudoku.getTxtForeground4());
+	                        tableroSudoku.listaTxtGenerados.add(tableroSudoku.getListaTxt()[i][j]);
+	                    }
+	                }
+	            }
+	            
+	            // Restaurar los números ingresados por el jugador
+	            for(int i = 0; i < 9; i++) {
+	                for(int j = 0; j < 9; j++) {
+	                    if (player.getSudokuActual()[i][j] != 0 && 
+	                        player.getSudokuGenerado()[i][j] == 0) {  // Solo si no es un número generado
+	                        tableroSudoku.getListaTxt()[i][j].setText(
+	                            String.valueOf(player.getSudokuActual()[i][j]));
+	                    }
+	                }
+	            }
+	            
+	            // Restaurar el tiempo
+	            cronometro.setHor(player.getTiempoHoras());
+	            cronometro.setMin(player.getTiempoMinutos());
+	            cronometro.setSeg(player.getTiempoSegundos());
+	            cronometro.iniciar();
+	            return;  // Importante: no llamar a iniciarComponentes de nuevo
+	        }
+	    }	
+		
 		// Llamada al método para inicializar otros componentes
-		iniciarComponentes();
+	    player.resetearJugador();
+		iniciarComponentes(player);
 	}
 
 	// Método para inicializar los componentes del formulario
-	public void iniciarComponentes() {
+	public void iniciarComponentes(Jugador player) {
 		// Inicialización del tablero de Sudoku
 		tableroSudoku = new TableroSudoku();
 		tableroSudoku.setTxtLargo(36); // Configura el tamaño de las celdas
@@ -93,7 +157,7 @@ public class FormSudoku extends JFrame {
 				if (formniveles != null) {
 					formniveles.setVisible(true); // Si ya existe la ventana de niveles, la muestra
 				} else {
-					formniveles = new FormNiveles(tableroSudoku, cronometro); // Crea la ventana de niveles
+					formniveles = new FormNiveles(tableroSudoku, cronometro, player); // Crea la ventana de niveles
 					formniveles.setVisible(true); // Muestra la ventana de niveles
 				}
 			}
@@ -129,10 +193,24 @@ public class FormSudoku extends JFrame {
 					//si el sudoku no es correcto se penaliza con 10 segundos
 				if(!tableroSudoku.comprobar()) {
 					cronometro.penalizar();
+					player.setErrores(player.getErrores() + 1);
 					}else{
 						cronometro.parar();
-						JOptionPane.showMessageDialog(null, "Tu tiempo fue de" + lblTimer.getText(),"Sudoku",JOptionPane.INFORMATION_MESSAGE);
-						
+		                // Calcular puntaje
+		                player.CalcularPuntaje(player.getErrores(), player.getDificultad());
+		                player.setDificultad(0);
+		                // Guardar puntaje
+		                ModificarArchivos.ActualizarJugador(player);
+		                
+		                JOptionPane.showMessageDialog(null, 
+		                    "¡Sudoku completado!\n" +
+		                    "Tiempo: " + lblTimer.getText() + "\n" +
+		                    "Puntaje: " + player.getPuntaje() + "\n" +
+		                    "Errores: " + player.getErrores(),
+		                    "Sudoku", JOptionPane.INFORMATION_MESSAGE);						
+						tableroSudoku.vaciar();
+						cronometro.limpiar();
+						tableroSudoku.limpiarTxt();
 					}
 						
 				}
@@ -146,6 +224,13 @@ public class FormSudoku extends JFrame {
 		
 		// Configuración del botón "Ir al menú"
 		JButton btnVolver = new JButton("Ir al menú");
+		btnVolver.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				GuardarAntesDeCerrar(player);
+				//cuando el usuario vuelva al menú se deben almacenar cronometro y y sudoku
+				dispose();
+			}
+		});
 		btnVolver.setBackground(new Color(89, 43, 25));
 		btnVolver.setForeground(Color.WHITE);
 		btnVolver.setFont(new Font("Arial Black", Font.BOLD, 12));
@@ -179,5 +264,40 @@ public class FormSudoku extends JFrame {
 	public static void setLblTimer(JLabel lblTimer) {
 		FormSudoku.lblTimer = lblTimer;
 	}
-	
+	public void GuardarAntesDeCerrar(Jugador player) {
+        // Guardar estado actual antes de volver al menú
+        JTextField[][] tableroActual = tableroSudoku.getListaTxt();
+        int[][] matrizActual = new int[9][9];
+        
+        // Convertir el tablero actual a matriz
+        for(int i = 0; i < 9; i++) {
+            for(int j = 0; j < 9; j++) {
+                String valor = tableroActual[i][j].getText();
+                matrizActual[i][j] = valor.isEmpty() ? 0 : Integer.parseInt(valor);
+            }
+        }
+        
+        // Guardar el estado en el objeto jugador
+        player.guardarEstadoPartida(
+            matrizActual, 
+            player.getSudokuGenerado(),
+            cronometro.getHor(),
+            cronometro.getMin(),
+            cronometro.getSeg(),
+            player.getDificultad()
+        );
+		// al igual que antes se cambian los datos y renueva la base de datos
+        // Guardar en archivo
+        ModificarArchivos.ActualizarJugador(player);
+        
+        
+        MenuPrincipal volver = new MenuPrincipal();
+        volver.setVisible(true);
+        cronometro.parar();
+        dispose();
+		
+		
+		cronometro.limpiar();
+		cronometro.parar();
+	}
 }

@@ -19,7 +19,8 @@ import kernel.Sudoku;
 
 public class TableroSudoku extends JPanel{
 
-    // Definición de las variables que representan las celdas del Sudoku y sus propiedades visuales
+	private static final long serialVersionUID = 1L;
+	// Definición de las variables que representan las celdas del Sudoku y sus propiedades visuales
     private JTextField[][] listaTxt;
     private int txtAncho;
     private int txtLargo;
@@ -36,7 +37,7 @@ public class TableroSudoku extends JPanel{
     private Color txtForeground4;
     private Sudoku sudoku;
     private ArrayList<JTextField> listaTxtAux;
-    private ArrayList<JTextField> listaTxtGenerados;
+    ArrayList<JTextField> listaTxtGenerados;
     public JTextField txtSelect;
 
     // Constructor de la clase, inicializa los componentes del panel
@@ -264,6 +265,14 @@ public class TableroSudoku extends JPanel{
 				}
 			}
 		}
+	}
+	
+	public void vaciar() {
+		for(int i = 0;i< listaTxt.length; i++) {
+			for(int j = 0;j< listaTxt[0].length; j++) {
+				listaTxt[i][j].setText("");
+				}	
+			}
 	}
 	
 	public boolean comprobar() {

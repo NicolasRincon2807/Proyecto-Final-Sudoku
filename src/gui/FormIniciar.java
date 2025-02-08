@@ -1,16 +1,15 @@
 package gui;
 
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import kernel.Jugador;
@@ -30,6 +29,24 @@ public class FormIniciar extends JFrame {
 
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+		
+        // Cargar la imagen desde el paquete resources
+        ImageIcon icono = new ImageIcon(getClass().getClassLoader().getResource("sudoku.png"));
+        setIconImage(icono.getImage());
+		
+        // Cargar la imagen desde el paquete resources
+        ImageIcon start = new ImageIcon(getClass().getClassLoader().getResource("start.png"));
+		
+		JLabel startimg = new JLabel(start);
+		startimg.setBounds(268, 76, 181, 177);
+		contentPane.add(startimg);
+		
+        // Cargar la imagen desde el paquete resources
+        ImageIcon menu = new ImageIcon(getClass().getClassLoader().getResource("preparados.png"));
+		
+		JLabel menuimg = new JLabel(menu);
+		menuimg.setBounds(26, 43, 126, 117);
+		contentPane.add(menuimg);
 		
 		JLabel lblBienvenida = new JLabel("Bienvenido jugador " + jugador.getNickName());
 		lblBienvenida.setBounds(43, 10, 393, 43);
@@ -51,25 +68,24 @@ public class FormIniciar extends JFrame {
 		btnSalir.setBounds(157, 218, 134, 35);
 		contentPane.add(btnSalir);
 		
-		JLabel lblqueDeseasHacer = new JLabel("¿que deseas hacer?");
+		JLabel lblqueDeseasHacer = new JLabel("¿Preparado?");
 		lblqueDeseasHacer.setForeground(Color.WHITE);
 		lblqueDeseasHacer.setFont(new Font("Arial Black", Font.PLAIN, 22));
-		lblqueDeseasHacer.setBounds(104, 38, 254, 43);
+		lblqueDeseasHacer.setBounds(153, 39, 161, 43);
 		contentPane.add(lblqueDeseasHacer);
 		
-		JButton btnCargar = new JButton("Cargar partida");
-		btnCargar.setForeground(Color.WHITE);
-		btnCargar.setFont(new Font("Arial Black", Font.PLAIN, 12));
-		btnCargar.setBackground(new Color(89, 43, 25));
-		btnCargar.setBounds(157, 106, 134, 35);
-		contentPane.add(btnCargar);
-		
-		JButton btnNueva = new JButton("Nueva partida");
+		JButton btnNueva = new JButton("Iniciar Partida");
+		btnNueva.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				FormSudoku nuevoSudoku = new FormSudoku(jugador);
+				nuevoSudoku.setVisible(true);
+				dispose();
+			}
+		});
 		btnNueva.setForeground(Color.WHITE);
 		btnNueva.setFont(new Font("Arial Black", Font.PLAIN, 12));
 		btnNueva.setBackground(new Color(89, 43, 25));
-		btnNueva.setBounds(157, 151, 134, 35);
+		btnNueva.setBounds(157, 125, 134, 35);
 		contentPane.add(btnNueva);
 	}
-
 }

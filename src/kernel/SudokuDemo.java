@@ -1,12 +1,11 @@
 package kernel;
 
-import gui.FormSudoku;
+import gui.MenuPrincipal;
 
 public class SudokuDemo {
 
 	public static void main(String[] args) {
-
-		FormSudoku pepe = new FormSudoku();
-		pepe.setVisible(true);
+		MenuPrincipal arranque = new MenuPrincipal();
+		arranque.setVisible(true);
 	}
 }

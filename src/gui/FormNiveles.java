@@ -2,10 +2,17 @@ package gui;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+
+import kernel.Jugador;
+import persistencia.ModificarArchivos;
+
 import java.awt.Color;
 import javax.swing.JLabel;
 import java.awt.Font;
+
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -14,12 +21,8 @@ public class FormNiveles extends JFrame {
 
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
-    private TableroSudoku tableroSudoku;
-
     // Constructor que recibe el tablero de Sudoku y el cronómetro
-    public FormNiveles(TableroSudoku tableroSudoku, Cronometro timer) {
-        
-        this.tableroSudoku = tableroSudoku; // Inicializa el tablero de Sudoku recibido
+    public FormNiveles(TableroSudoku tableroSudoku, Cronometro timer, Jugador jugador) {
         
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Configura el comportamiento al cerrar la ventana
         setBounds(100, 100, 300, 300); // Establece el tamaño y la posición inicial de la ventana
@@ -28,19 +31,38 @@ public class FormNiveles extends JFrame {
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5)); // Configura un borde vacío alrededor del panel
         setContentPane(contentPane); // Establece el panel como el contenido de la ventana
         contentPane.setLayout(null); // Establece el layout del panel como null (posicionamiento absoluto)
-
+        // Cargar la imagen desde el paquete resources
+        ImageIcon icono = new ImageIcon(getClass().getClassLoader().getResource("sudoku.png"));
+        setIconImage(icono.getImage());
+        
         JLabel lblTitulo = new JLabel("Sudoku"); // Título del formulario
         lblTitulo.setForeground(Color.WHITE); // Establece el color del texto
         lblTitulo.setFont(new Font("Arial Black", Font.BOLD, 30)); // Configura la fuente
         lblTitulo.setBounds(73, 11, 147, 43); // Establece la posición y tamaño de la etiqueta
         contentPane.add(lblTitulo); // Añade la etiqueta al panel
-
+        
         // Botón para seleccionar el nivel fácil
         JButton btnFacil = new JButton("Fácil");
         btnFacil.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                tableroSudoku.generarSudoku(1); // Genera un Sudoku fácil (nivel 1)
+                tableroSudoku.generarSudoku(1);
+                jugador.resetearJugador();
+                // Genera un Sudoku fácil (nivel 1)
+                jugador.setDificultad(1);
+
+                // Convertir el tablero actual a matriz y guardarlo
+                JTextField[][] tableroActual = tableroSudoku.getListaTxt();
+                int[][] matrizGenerada = new int[9][9];
+                
+                for(int i = 0; i < 9; i++) {
+                    for(int j = 0; j < 9; j++) {
+                        String valor = tableroActual[i][j].getText();
+                        matrizGenerada[i][j] = valor.isEmpty() ? 0 : Integer.parseInt(valor);
+                    }
+                }
+                jugador.setSudokuGenerado(matrizGenerada);
                 timer.reiniciar(); // Reinicia el cronómetro
+                ModificarArchivos.ActualizarJugador(jugador);
                 dispose(); // Cierra la ventana de selección de niveles
             }
         });
@@ -55,6 +77,21 @@ public class FormNiveles extends JFrame {
         btnMedio.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 tableroSudoku.generarSudoku(2); // Genera un Sudoku de dificultad media (nivel 2)
+                jugador.setDificultad(2);
+                jugador.resetearJugador();
+
+                // Convertir el tablero actual a matriz y guardarlo
+                JTextField[][] tableroActual = tableroSudoku.getListaTxt();
+                int[][] matrizGenerada = new int[9][9];
+                
+                for(int i = 0; i < 9; i++) {
+                    for(int j = 0; j < 9; j++) {
+                        String valor = tableroActual[i][j].getText();
+                        matrizGenerada[i][j] = valor.isEmpty() ? 0 : Integer.parseInt(valor);
+                    }
+                }
+                jugador.setSudokuGenerado(matrizGenerada);
+                ModificarArchivos.ActualizarJugador(jugador);
                 timer.reiniciar(); // Reinicia el cronómetro
                 dispose(); // Cierra la ventana de selección de niveles
             }
@@ -70,6 +107,20 @@ public class FormNiveles extends JFrame {
         btnDificil.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 tableroSudoku.generarSudoku(3); // Genera un Sudoku difícil (nivel 3)
+                jugador.setDificultad(3);
+                jugador.resetearJugador();
+                // Convertir el tablero actual a matriz y guardarlo
+                JTextField[][] tableroActual = tableroSudoku.getListaTxt();
+                int[][] matrizGenerada = new int[9][9];
+                
+                for(int i = 0; i < 9; i++) {
+                    for(int j = 0; j < 9; j++) {
+                        String valor = tableroActual[i][j].getText();
+                        matrizGenerada[i][j] = valor.isEmpty() ? 0 : Integer.parseInt(valor);
+                    }
+                }
+                jugador.setSudokuGenerado(matrizGenerada);
+                ModificarArchivos.ActualizarJugador(jugador);
                 timer.reiniciar(); // Reinicia el cronómetro
                 dispose(); // Cierra la ventana de selección de niveles
             }

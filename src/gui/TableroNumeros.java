@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class TableroNumeros extends JPanel{// Definición de variables que configuran el aspecto y comportamiento de los componentes
+	private static final long serialVersionUID = 1L;
 	private int txtAncho; // Ancho de cada campo de texto
 	private int txtLargo; // Alto de cada campo de texto
 	private int txtMargen; // Margen entre los campos de texto

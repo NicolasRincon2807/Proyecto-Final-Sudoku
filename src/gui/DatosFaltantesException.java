@@ -8,6 +8,8 @@
 package gui;
 //Se crea una excepción personalizada dado el caso de que falten datos en los espacios
 class DatosFaltantesException extends Exception {
+	private static final long serialVersionUID = 1L;
+
 	public DatosFaltantesException(String mensaje) {
 		super(mensaje);
 	}

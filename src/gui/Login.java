@@ -1,15 +1,23 @@
 package gui;
 
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import kernel.Jugador;
+import persistencia.ModificarArchivos;
+
 import java.awt.Color;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
+
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 
@@ -18,7 +26,7 @@ public class Login extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField txtUserName;
-	private JTextField textField;
+	private JTextField txtContraseña;
 
 	public Login() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -26,14 +34,24 @@ public class Login extends JFrame {
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(242, 174, 37));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-
+		
+        // Cargar la imagen desde el paquete resources
+        ImageIcon icono = new ImageIcon(getClass().getClassLoader().getResource("sudoku.png"));
+        setIconImage(icono.getImage());
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
+        // Cargar la imagen desde el paquete resources
+        ImageIcon sesion = new ImageIcon(getClass().getClassLoader().getResource("iniciosesion.png"));
+		
+		JLabel menuimg = new JLabel(sesion);
+		menuimg.setBounds(313, 10, 64, 65);
+		contentPane.add(menuimg);
+		
 		JLabel lblIniciarSesion = new JLabel("Inicia Sesión");
-		lblIniciarSesion.setBounds(106, 10, 246, 43);
+		lblIniciarSesion.setBounds(94, 18, 246, 43);
 		lblIniciarSesion.setForeground(Color.WHITE);
-		lblIniciarSesion.setFont(new Font("Arial Black", Font.BOLD, 30));
+		lblIniciarSesion.setFont(new Font("Arial Black", Font.PLAIN, 30));
 		contentPane.add(lblIniciarSesion);
 		
 		JButton btnVolver = new JButton("Volver");
@@ -45,7 +63,7 @@ public class Login extends JFrame {
 			}
 		});
 		btnVolver.setForeground(Color.WHITE);
-		btnVolver.setFont(new Font("Arial Black", Font.BOLD, 12));
+		btnVolver.setFont(new Font("Arial Black", Font.PLAIN, 12));
 		btnVolver.setBackground(new Color(255, 0, 0));
 		btnVolver.setBounds(10, 218, 134, 35);
 		contentPane.add(btnVolver);
@@ -56,11 +74,11 @@ public class Login extends JFrame {
 		contentPane.add(txtUserName);
 		txtUserName.setColumns(10);
 		
-		textField = new JTextField();
-		textField.setFont(new Font("Arial", Font.PLAIN, 15));
-		textField.setColumns(10);
-		textField.setBounds(243, 138, 134, 28);
-		contentPane.add(textField);
+		txtContraseña = new JTextField();
+		txtContraseña.setFont(new Font("Arial", Font.PLAIN, 15));
+		txtContraseña.setColumns(10);
+		txtContraseña.setBounds(243, 138, 134, 28);
+		contentPane.add(txtContraseña);
 		
 		JLabel lblUserName = new JLabel("Nombre:");
 		lblUserName.setForeground(Color.WHITE);
@@ -75,8 +93,28 @@ public class Login extends JFrame {
 		contentPane.add(lblContraseña);
 		
 		JButton btnIniciar = new JButton("Iniciar");
+		btnIniciar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				List<Jugador> jugadores = new ArrayList<>();
+				ModificarArchivos.LeerJugadores(jugadores);
+				
+				if(ModificarArchivos.ValidarNickName(jugadores, txtUserName.getText())) {
+					
+					if(ModificarArchivos.EncontrarJugador(jugadores, txtUserName.getText()).getPassword().equals(txtContraseña.getText())) {
+						FormIniciar avanzar = new FormIniciar(ModificarArchivos.EncontrarJugador(jugadores, txtUserName.getText()));
+						avanzar.setVisible(true);
+						dispose();
+					}
+					else{
+						JOptionPane.showMessageDialog(null, "Contraseña incorrecta");
+					}
+				}else {
+					JOptionPane.showMessageDialog(null, "Error el usuario no se encuentra registrado");
+				}
+			}
+		});
 		btnIniciar.setForeground(Color.WHITE);
-		btnIniciar.setFont(new Font("Arial Black", Font.BOLD, 12));
+		btnIniciar.setFont(new Font("Arial Black", Font.PLAIN, 12));
 		btnIniciar.setBackground(new Color(0, 255, 0));
 		btnIniciar.setBounds(277, 218, 134, 35);
 		contentPane.add(btnIniciar);
