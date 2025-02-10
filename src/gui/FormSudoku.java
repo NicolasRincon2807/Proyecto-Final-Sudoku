@@ -22,7 +22,16 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.ActionEvent;
 
-
+/**
+ * Formulario principal del juego de Sudoku.
+ * 
+ * Gestiona la interfaz de juego, incluyendo el tablero, 
+ * cronómetro, botones de control y lógica de juego.
+ * 
+ * @author Nicolás Rincón
+ * @version 1.0
+ * @since 2025-02-10
+ */
 public class FormSudoku extends JFrame {
 
 	// Definición de variables
@@ -34,7 +43,13 @@ public class FormSudoku extends JFrame {
 	private static JLabel lblTimer = new JLabel("00:00:00:00"); // Etiqueta para mostrar el tiempo transcurrido
 	Cronometro cronometro = new Cronometro(lblTimer); // Instancia del cronómetro
 	
-	// Constructor de la clase FormSudoku, inicializa los componentes
+    /**
+     * Constructor para crear el formulario de Sudoku.
+     * 
+     * Inicializa los componentes y gestiona la carga de partidas guardadas.
+     * 
+     * @param player Objeto Jugador con la información del usuario
+     */
 	public FormSudoku(Jugador player) {
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE); // No cerrar automáticamente
 
@@ -111,7 +126,13 @@ public class FormSudoku extends JFrame {
 		iniciarComponentes(player);
 	}
 
-	// Método para inicializar los componentes del formulario
+    /**
+     * Inicializa los componentes del formulario de Sudoku.
+     * 
+     * Configura el tablero, botones, cronómetro y otros elementos de la interfaz.
+     * 
+     * @param player Objeto Jugador con la información del usuario
+     */
 	public void iniciarComponentes(Jugador player) {
 		// Inicialización del tablero de Sudoku
 		tableroSudoku = new TableroSudoku();
@@ -197,6 +218,8 @@ public class FormSudoku extends JFrame {
 					}else{
 						cronometro.parar();
 		                // Calcular puntaje
+						player.setTiempoMinutos(cronometro.getMin());
+						player.setTiempoHoras(cronometro.getHor());
 		                player.CalcularPuntaje(player.getErrores(), player.getDificultad());
 		                player.setDificultad(0);
 		                // Guardar puntaje

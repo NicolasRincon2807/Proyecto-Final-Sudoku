@@ -14,7 +14,19 @@ import javax.swing.JOptionPane;
 
 import kernel.Jugador;
 
+/**
+ * Clase ModificarArchivos
+ * 
+ * Maneja la persistencia de datos de los jugadores en archivos de texto.
+ * 
+ * Autor: Nicolas Rincon
+ * Fecha: 2025-02-10
+ */
 public class ModificarArchivos {
+    /**
+     * Valida la existencia de un archivo y lo crea si no existe.
+     * @param nombreArchivo Nombre del archivo a validar.
+     */
     public static void validarYCrearArchivo(String nombreArchivo) {
         File archivo = new File(nombreArchivo);
         if (!archivo.exists()) {

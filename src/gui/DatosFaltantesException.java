@@ -1,16 +1,24 @@
-/**
- * KEVIN NICOLÁS RINCÓN HERNÁNDEZ
- * COD: 20241020082
- * FECHA: 13/01/2025
- * PROGRAMA QUE MANEJA DATOS DE UN GRUPO DE N ESTUDIANTES
- */
-
 package gui;
-//Se crea una excepción personalizada dado el caso de que falten datos en los espacios
-class DatosFaltantesException extends Exception {
-	private static final long serialVersionUID = 1L;
 
-	public DatosFaltantesException(String mensaje) {
-		super(mensaje);
-	}
+/**
+ * Excepción personalizada para manejar casos de datos faltantes en el sistema.
+ * 
+ * Esta excepción se lanza cuando se detecta que algún campo o dato requerido
+ * no ha sido proporcionado, asegurando la integridad de la información.
+ * 
+ * @author Nicolás Rincón
+ * @version 1.0
+ * @since 2025-02-10
+ */
+class DatosFaltantesException extends Exception {
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * Constructor que permite crear la excepción con un mensaje personalizado.
+     * 
+     * @param mensaje Descripción detallada del error de datos faltantes
+     */
+    public DatosFaltantesException(String mensaje) {
+        super(mensaje);
+    }
 }

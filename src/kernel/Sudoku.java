@@ -2,11 +2,21 @@ package kernel;
 
 import java.util.Random;
 
+/**
+ * Clase Sudoku
+ * 
+ * Gestiona la lógica del juego de Sudoku, incluyendo la generación y validación de tableros.
+ * 
+ * Autor: Nicolas Rincon
+ * Fecha: 2025-02-10
+ */
 public class Sudoku {// Declaración de una matriz 9x9 para almacenar el Sudoku
 	private int sudoku[][];
 
-	// Constructor de la clase Sudoku, inicializa la matriz 9x9
-	public Sudoku(){
+    /**
+     * Constructor de la clase Sudoku.
+     * Inicializa un tablero de Sudoku vacío.
+     */	public Sudoku(){
 	    sudoku = new int[9][9]; // Inicializa la matriz de Sudoku con ceros
 	}
 

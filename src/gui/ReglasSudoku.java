@@ -3,11 +3,21 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+/**
+ * Clase ReglasSudoku
+ * 
+ * Muestra las reglas del juego de Sudoku en una ventana.
+ * 
+ * Autor: Nicolas Rincon
+ * Fecha: 2025-02-10
+ */
 public class ReglasSudoku extends JFrame {
 
 	private static final long serialVersionUID = 1L;
-
+    /**
+     * Constructor de la clase ReglasSudoku.
+     * Configura la interfaz gráfica para mostrar las reglas del juego.
+     */
 	public ReglasSudoku() {
         // Cargar la imagen desde el paquete resources
         ImageIcon icono = new ImageIcon(getClass().getClassLoader().getResource("sudoku.png"));

@@ -2,6 +2,14 @@ package kernel;
 
 import javax.swing.JTextField;
 
+/**
+ * Clase Jugador
+ * 
+ * Representa a un jugador en el sistema, almacenando su información personal y su estado en el juego.
+ * 
+ * Autor: Nicolas Rincon
+ * Fecha: 2025-02-10
+ */
 public class Jugador implements Comparable<Jugador>{
     private String nickName;
     private String password;
@@ -21,7 +29,10 @@ public class Jugador implements Comparable<Jugador>{
         // Orden descendente (mayor a menor)
         return Double.compare(otroJugador.getPuntaje(), this.puntaje);
     }
-    
+    /**
+     * Constructor de la clase Jugador.
+     * Inicializa un nuevo jugador con un nombre y contraseña.
+     */
     public Jugador(String nickName, String password) {
         this.nickName = nickName;
         this.password = password;

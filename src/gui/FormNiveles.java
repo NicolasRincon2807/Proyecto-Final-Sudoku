@@ -17,11 +17,27 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
+/**
+ * Formulario para selección de niveles de dificultad en el Sudoku.
+ * 
+ * Permite al jugador elegir entre tres niveles de dificultad:
+ * Fácil, Medio y Difícil.
+ * 
+ * @author Nicolás Rincón
+ * @version 1.0
+ * @since 2025-02-10
+ */
 public class FormNiveles extends JFrame {
 
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
-    // Constructor que recibe el tablero de Sudoku y el cronómetro
+    /**
+     * Constructor para crear el formulario de selección de niveles.
+     * 
+     * @param tableroSudoku Tablero de Sudoku donde se generará el juego
+     * @param timer Cronómetro para medir el tiempo de juego
+     * @param jugador Objeto Jugador con la información del usuario
+     */
     public FormNiveles(TableroSudoku tableroSudoku, Cronometro timer, Jugador jugador) {
         
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Configura el comportamiento al cerrar la ventana

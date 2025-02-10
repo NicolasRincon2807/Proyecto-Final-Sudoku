@@ -10,6 +10,15 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+/**
+ * Clase TableroNumeros
+ * 
+ * Representa el panel de números del Sudoku.
+ * Contiene los números del 1 al 9 y permite seleccionarlos.
+ * 
+ * Autor: Nicolas Rincon
+ * Fecha: 2025-02-10
+ */
 public class TableroNumeros extends JPanel{// Definición de variables que configuran el aspecto y comportamiento de los componentes
 	private static final long serialVersionUID = 1L;
 	private int txtAncho; // Ancho de cada campo de texto
@@ -23,7 +32,10 @@ public class TableroNumeros extends JPanel{// Definición de variables que confi
 	private Color txtForeground2; // Color de texto cuando el mouse entra al campo de texto
 	private TableroSudoku tableroSudoku; // Instancia del tablero Sudoku asociado
 
-	// Constructor de la clase
+    /**
+     * Constructor de la clase TableroNumeros.
+     * Inicializa el tablero de selección de números.
+     */
 	public TableroNumeros() {
 	    // Inicializa los componentes del tablero
 	    iniciarComponentes();

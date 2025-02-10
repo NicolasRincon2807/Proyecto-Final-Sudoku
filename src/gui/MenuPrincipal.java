@@ -30,12 +30,24 @@ import java.util.Collections;
 import java.util.List;
 import java.awt.event.ActionEvent;
 
+/**
+ * Clase MenuPrincipal
+ * 
+ * Esta clase representa la ventana principal del juego de Sudoku.
+ * Permite a los jugadores iniciar sesión, registrarse, ver las reglas, consultar puntajes y salir del juego.
+ * 
+ * Autor: Nicolas Rincon
+ * Fecha: 2025-02-10
+ */
 public class MenuPrincipal extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 
-
+    /**
+     * Constructor de la clase MenuPrincipal.
+     * Configura la interfaz gráfica y los botones de navegación.
+     */
 	public MenuPrincipal() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -133,7 +145,10 @@ public class MenuPrincipal extends JFrame {
 
 	}
 	
-	
+    /**
+     * Organiza la lista de jugadores según su puntaje en orden descendente.
+     * @return Lista de jugadores ordenados.
+     */
 	public List<Jugador> OrganizarJugadores() {
 		List<Jugador> jugadores = new ArrayList<>();
 		List<Jugador> jugadoresOrganizados = new ArrayList<>();
@@ -147,7 +162,9 @@ public class MenuPrincipal extends JFrame {
 		Collections.sort(jugadoresOrganizados);
 		return jugadoresOrganizados;
 	}
-	
+    /**
+     * Muestra los datos de los jugadores en una tabla ordenada.
+     */
 	public void MostrarDatos() {
 	    List<Jugador> jugadores = OrganizarJugadores();
 	    String[] columnNames = {"Usuario", "Puntaje"};

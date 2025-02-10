@@ -21,7 +21,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
-
+/**
+ * Clase Register
+ * 
+ * Permite a los usuarios registrarse en el sistema.
+ * Se validan las credenciales y se almacenan en un archivo.
+ * 
+ * Autor: Nicolas Rincon
+ * Fecha: 2025-02-10
+ */
 public class Register extends JFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -30,7 +38,10 @@ public class Register extends JFrame {
 	private JTextField txtContraseña;
 	private JTextField txtConfirmarContraseña;
 
-
+    /**
+     * Constructor de la clase Register.
+     * Configura la interfaz gráfica para el registro de usuario.
+     */
 	public Register() {
 		ModificarArchivos.validarYCrearArchivo("archivo6.txt");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

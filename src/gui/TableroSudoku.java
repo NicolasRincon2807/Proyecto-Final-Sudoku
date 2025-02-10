@@ -17,6 +17,15 @@ import javax.swing.JTextField;
 
 import kernel.Sudoku;
 
+/**
+ * Clase TableroSudoku
+ * 
+ * Representa el tablero de Sudoku donde los jugadores completan los números.
+ * Controla la validación y la lógica del juego.
+ * 
+ * Autor: Nicolas Rincon
+ * Fecha: 2025-02-10
+ */
 public class TableroSudoku extends JPanel{
 
 	private static final long serialVersionUID = 1L;
@@ -40,7 +49,10 @@ public class TableroSudoku extends JPanel{
     ArrayList<JTextField> listaTxtGenerados;
     public JTextField txtSelect;
 
-    // Constructor de la clase, inicializa los componentes del panel
+    /**
+     * Constructor de la clase TableroSudoku.
+     * Inicializa el tablero del Sudoku y configura su interfaz.
+     */
     TableroSudoku(){
         iniciarComponentes();
     }

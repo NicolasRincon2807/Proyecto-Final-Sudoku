@@ -13,13 +13,27 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import kernel.Jugador;
-
+/**
+ * Formulario de inicio para el juego de Sudoku.
+ * 
+ * Esta clase gestiona la pantalla inicial donde el jugador puede 
+ * comenzar una nueva partida o volver al menú principal.
+ * 
+ * @author Nicolás Rincón
+ * @version 1.0
+ * @since 2025-02-10
+ */
 public class FormIniciar extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 
 
+    /**
+     * Constructor para crear el formulario de inicio.
+     * 
+     * @param jugador Objeto Jugador con la información del usuario actual
+     */
 	public FormIniciar(Jugador jugador) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
